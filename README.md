@@ -42,6 +42,17 @@ Visit `http://localhost:5000`
 
 See `execution_plan.md` for detailed deployment instructions to Render, Railway, or other platforms.
 
+### Keep-Alive Workflow
+
+This repository includes a GitHub Actions workflow (`.github/workflows/keep_alive.yml`) that automatically pings the deployed Render app every 14 minutes to prevent it from spinning down due to inactivity on Render's free tier.
+
+**Important Notes:**
+- The workflow runs on a schedule every 14 minutes to comply with GitHub Actions rate limits
+- GitHub Actions doesn't guarantee exact timing for scheduled workflows
+- Scheduled workflows only run on the default branch (`main`)
+- The minimum recommended interval is 15 minutes to avoid GitHub rate limiting
+- You can manually trigger the workflow from the Actions tab if needed
+
 ## Structure
 
 ```
