@@ -28,87 +28,124 @@
         {% endif %}
         {% endwith %}
 
-        <div class="form-card">
-            <h2>Add New Product</h2>
-            <p class="subtitle">Fill in the details below to add a new product to your catalog</p>
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="add">➕ Add Product</button>
+            <button class="tab-btn" data-tab="manage">📦 Manage Products</button>
+        </div>
 
-            <form method="POST" action="{{ url_for('upload_product') }}" enctype="multipart/form-data" id="productForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="name">Product Name *</label>
-                        <input type="text" id="name" name="name" required placeholder="Interactive Puzzle Toy">
+        <!-- Add Product Tab -->
+        <div id="addTab" class="tab-content active">
+            <div class="form-card">
+                <h2>Add New Product</h2>
+                <p class="subtitle">Fill in the details below to add a new product to your catalog</p>
+
+                <form method="POST" action="{{ url_for('upload_product') }}" enctype="multipart/form-data"
+                    id="productForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Product Name *</label>
+                            <input type="text" id="name" name="name" required placeholder="Interactive Puzzle Toy">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Category *</label>
+                            <select id="category" name="category" required>
+                                <option value="">Select category</option>
+                                <option value="toys">🎾 Toys</option>
+                                <option value="treats">🦴 Treats</option>
+                                <option value="bowls">🍽️ Bowls & Feeders</option>
+                                <option value="accessories">🎀 Accessories</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="price">Current Price (₹) *</label>
+                            <input type="number" id="price" name="price" step="0.01" min="0" required
+                                placeholder="29.99">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="originalPrice">Original Price (₹)</label>
+                            <input type="number" id="originalPrice" name="originalPrice" step="0.01" min="0"
+                                placeholder="39.99">
+                            <small>Leave empty if no discount</small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="rating">Rating (1-5) *</label>
+                            <input type="number" id="rating" name="rating" min="1" max="5" step="0.1" required
+                                placeholder="4.8">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reviews">Review Count *</label>
+                            <input type="number" id="reviews" name="reviews" min="0" required placeholder="1243">
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="category">Category *</label>
-                        <select id="category" name="category" required>
-                            <option value="">Select category</option>
-                            <option value="toys">🎾 Toys</option>
-                            <option value="treats">🦴 Treats</option>
-                            <option value="bowls">🍽️ Bowls & Feeders</option>
-                            <option value="accessories">🎀 Accessories</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="price">Current Price ($) *</label>
-                        <input type="number" id="price" name="price" step="0.01" min="0" required placeholder="29.99">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="description" rows="3" required
+                            placeholder="Keep your dog mentally stimulated with this challenging puzzle toy. Perfect for reducing boredom and anxiety."></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="originalPrice">Original Price ($)</label>
-                        <input type="number" id="originalPrice" name="originalPrice" step="0.01" min="0"
-                            placeholder="39.99">
-                        <small>Leave empty if no discount</small>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="rating">Rating (1-5) *</label>
-                        <input type="number" id="rating" name="rating" min="1" max="5" step="0.1" required
-                            placeholder="4.8">
+                        <label for="affiliateLink">Amazon Affiliate Link *</label>
+                        <input type="url" id="affiliateLink" name="affiliateLink" required
+                            placeholder="https://amzn.to/xyz123">
+                        <small>Your Amazon affiliate URL</small>
                     </div>
 
                     <div class="form-group">
-                        <label for="reviews">Review Count *</label>
-                        <input type="number" id="reviews" name="reviews" min="0" required placeholder="1243">
+                        <label for="badge">Badge (Optional)</label>
+                        <input type="text" id="badge" name="badge" placeholder="Top Rated, Best Seller, Premium...">
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="description">Description *</label>
-                    <textarea id="description" name="description" rows="3" required
-                        placeholder="Keep your dog mentally stimulated with this challenging puzzle toy. Perfect for reducing boredom and anxiety."></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="image">Product Image * (Max 5MB, JPG/PNG/WebP)</label>
+                        <input type="file" id="image" name="image" accept="image/*" required>
+                        <div id="imagePreview" class="image-preview"></div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="affiliateLink">Amazon Affiliate Link *</label>
-                    <input type="url" id="affiliateLink" name="affiliateLink" required
-                        placeholder="https://amzn.to/xyz123">
-                    <small>Your Amazon affiliate URL</small>
-                </div>
+                    <button type="submit" class="btn-primary btn-large">
+                        <span>Add Product</span>
+                        <span class="icon">➤</span>
+                    </button>
+                </form>
+            </div>
+        </div>
 
-                <div class="form-group">
-                    <label for="badge">Badge (Optional)</label>
-                    <input type="text" id="badge" name="badge" placeholder="Top Rated, Best Seller, Premium...">
-                </div>
+        <!-- Manage Products Tab -->
+        <div id="manageTab" class="tab-content">
+            <div class="form-card">
+                <h2>Manage Products</h2>
+                <p class="subtitle">View, edit, and delete existing products</p>
 
-                <div class="form-group">
-                    <label for="image">Product Image * (Max 5MB, JPG/PNG/WebP)</label>
-                    <input type="file" id="image" name="image" accept="image/*" required>
-                    <div id="imagePreview" class="image-preview"></div>
-                </div>
-
-                <button type="submit" class="btn-primary btn-large">
-                    <span>Add Product</span>
-                    <span class="icon">➤</span>
-                </button>
-            </form>
+                <div id="productsLoading" class="loading">Loading products...</div>
+                <div id="productsError" class="error" style="display: none;"></div>
+                <div id="productsList" class="products-list"></div>
+            </div>
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete <strong id="deleteProductName"></strong>?</p>
+            <p class="warning">This action cannot be undone!</p>
+            <div class="modal-actions">
+                <button id="confirmDelete" class="btn-danger">Delete</button>
+                <button id="cancelDelete" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
 
     <script src="{{ url_for('static', filename='admin.js') }}"></script>
 </body>

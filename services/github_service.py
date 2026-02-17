@@ -115,3 +115,76 @@ class GitHubService:
     def _get_cdn_url(self, filename):
         """Get CDN URL for uploaded image"""
         return f'https://raw.githubusercontent.com/{self.repo_owner}/{self.repo_name}/main/images/products/{filename}'
+    
+    def get_products(self):
+        """Get list of all products"""
+        data = self.get_current_products()
+        return data.get('products', [])
+    
+    def update_product(self, index, product_data):
+        """Update a product at specific index"""
+        # Get current data
+        current_data = self.get_current_products()
+        products = current_data['products']
+        
+        # Validate index
+        if index < 0 or index >= len(products):
+            raise ValueError(f'Product index {index} out of range')
+        
+        # Preserve the ID from the existing product
+        existing_id = products[index].get('id')
+        if existing_id:
+            product_data['id'] = existing_id
+        
+        # Update the product
+        products[index] = product_data
+        current_data['lastUpdated'] = datetime.utcnow().isoformat() + 'Z'
+        
+        # Save to GitHub
+        return self._update_json_file('products.json', current_data)
+    
+    def delete_product(self, index):
+        """Delete a product at specific index"""
+        # Get current data
+        current_data = self.get_current_products()
+        products = current_data['products']
+        
+        # Validate index
+        if index < 0 or index >= len(products):
+            raise ValueError(f'Product index {index} out of range')
+        
+        # Get product info before deleting (for logging)
+        deleted_product = products[index]
+        
+        # Remove the product
+        products.pop(index)
+        current_data['lastUpdated'] = datetime.utcnow().isoformat() + 'Z'
+        
+        # Save to GitHub
+        result = self._update_json_file('products.json', current_data)
+        
+        return {
+            'success': result,
+            'deleted_product': deleted_product
+        }
+    
+    def delete_image(self, image_url):
+        """Delete an image from GitHub (optional cleanup)"""
+        # Extract filename from URL
+        filename = image_url.split('/')[-1]
+        path = f'images/products/{filename}'
+        
+        # Get file SHA
+        sha = self.get_file_sha(path)
+        if not sha:
+            return False  # Image doesn't exist
+        
+        url = f'{self.base_url}/contents/{path}'
+        data = {
+            'message': f'Delete product image: {filename}',
+            'sha': sha,
+            'branch': 'main'
+        }
+        
+        response = requests.delete(url, json=data, headers=self._headers())
+        return response.status_code == 200

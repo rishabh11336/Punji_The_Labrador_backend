@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product - Punji Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1>🐕 Punji Product Manager</h1>
+            <div class="nav-right">
+                <span class="welcome">Welcome, {{ username }}!</span>
+                <a href="{{ url_for('admin') }}" class="btn-secondary">← Back to Admin</a>
+                <a href="{{ url_for('logout') }}" class="btn-secondary">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="form-card">
+            <h2>Edit Product</h2>
+            <p class="subtitle">Update product details below</p>
+
+            <form method="POST" action="{{ url_for('edit_product', product_index=index) }}"
+                enctype="multipart/form-data" id="editForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Product Name *</label>
+                        <input type="text" id="name" name="name" required placeholder="Interactive Puzzle Toy"
+                            value="{{ product.name }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select category</option>
+                            <option value="toys" {% if product.category=='toys' %}selected{% endif %}>🎾 Toys</option>
+                            <option value="treats" {% if product.category=='treats' %}selected{% endif %}>🦴 Treats
+                            </option>
+                            <option value="bowls" {% if product.category=='bowls' %}selected{% endif %}>🍽️ Bowls &
+                                Feeders</option>
+                            <option value="accessories" {% if product.category=='accessories' %}selected{% endif %}>🎀
+                                Accessories</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price">Current Price (₹) *</label>
+                        <input type="number" id="price" name="price" step="0.01" min="0" required placeholder="29.99"
+                            value="{{ product.price }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="originalPrice">Original Price (₹)</label>
+                        <input type="number" id="originalPrice" name="originalPrice" step="0.01" min="0"
+                            placeholder="39.99" value="{{ product.originalPrice or '' }}">
+                        <small>Leave empty if no discount</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rating">Rating (1-5) *</label>
+                        <input type="number" id="rating" name="rating" min="1" max="5" step="0.1" required
+                            placeholder="4.8" value="{{ product.rating }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reviews">Review Count *</label>
+                        <input type="number" id="reviews" name="reviews" min="0" required placeholder="1243"
+                            value="{{ product.reviews }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" name="description" rows="3" required
+                        placeholder="Keep your dog mentally stimulated with this challenging puzzle toy. Perfect for reducing boredom and anxiety.">{{ product.description }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="affiliateLink">Amazon Affiliate Link *</label>
+                    <input type="url" id="affiliateLink" name="affiliateLink" required
+                        placeholder="https://amzn.to/xyz123" value="{{ product.affiliateLink }}">
+                    <small>Your Amazon affiliate URL</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="badge">Badge (Optional)</label>
+                    <input type="text" id="badge" name="badge" placeholder="Top Rated, Best Seller, Premium..."
+                        value="{{ product.badge or '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Product Image (Max 5MB, JPG/PNG/WebP)</label>
+                    <small>Current image: <a href="{{ product.image }}" target="_blank">View Image</a>. Upload a new one
+                        to replace it.</small>
+                    <input type="file" id="image" name="image" accept="image/*">
+                    <div id="imagePreview" class="image-preview">
+                        <img src="{{ product.image }}" alt="{{ product.name }}"
+                            style="max-width:200px; border-radius:8px; margin-top:10px;">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary btn-large">
+                    <span>Update Product</span>
+                    <span class="icon">✓</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='admin.js') }}"></script>
+</body>
+
+</html>
